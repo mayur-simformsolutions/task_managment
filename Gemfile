@@ -52,3 +52,6 @@ gem 'devise_invitable'
 
 #backgound jobs for sending mail
 gem 'delayed_job_active_record'
+
+#rack cors
+gem 'rack-cors'
