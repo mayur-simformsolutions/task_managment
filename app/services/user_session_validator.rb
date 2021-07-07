@@ -17,8 +17,6 @@ class UserSessionValidator
     # validate
     user = User.find_by(auth_token: token)
     raise SessionNotFound, 'invalid session' if user.blank?
-    user.auth_token = nil
-    user.save!
     @user = user
   end
 end

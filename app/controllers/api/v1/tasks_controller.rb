@@ -16,7 +16,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   #POST /api/tasks
   def create
     begin
-      task = Task.create!(task_params)
+      task = Task.create!(task_params.merge(creator: current_user))
     rescue => e 
       render_exception(e, 422) && return
     end

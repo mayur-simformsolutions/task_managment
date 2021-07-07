@@ -6,7 +6,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.date :due_date
       t.text :description
       t.integer :status, default: 0
-
+      t.uuid :creator_id, index: true
       t.timestamps
     end
   end

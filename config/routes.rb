@@ -5,16 +5,13 @@ Rails.application.routes.draw do
       devise_scope :user do
         post "sign_up", to: "registrations#create"
         post "sign_in", to: "sessions#create"
-        post 'forgot_password', to: 'passwords#forgot_password'
-        post 'reset_password', to: 'passwords#reset_password'
-        put 'change_password', to: 'passwords#change_password'
-        post "confirm_email", to: "confirmations#confirm_email"
         post "send_invitation", to: "invitations#send_invitation"
-        post "send_reinvitation", to: "invitations#send_reinvitation"
         post "accept_invitation", to: "invitations#accept_invitation"
         delete "logout", to: "sessions#logout"
-        get "profile", to: "sessions#profile"
       end
+
+      # Tasks
+      resources :tasks, only: [:index, :create, :destroy, :update, :show]
 
       # Custom routing error path
       match '*path', to: 'base#routing_error', via: %i[get post put patch delete]

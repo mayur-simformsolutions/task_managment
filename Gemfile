@@ -42,10 +42,13 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 
 #need to be added
-gem 'fast_jsonapi'
+gem 'jsonapi-serializer'
 gem 'jwt'
 
 
 # Authentication
 gem 'devise'
 gem 'devise_invitable'
+
+#backgound jobs for sending mail
+gem 'delayed_job_active_record'
