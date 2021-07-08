@@ -5,7 +5,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   # GET  /api/tasks
   def index
     begin
-      tasks = Tasks.all
+      tasks = Task.all
       tasks = tasks.paginate(page: params[:page], per_page: 10)
     rescue => e
       render_exception(e, 422) && return
@@ -16,7 +16,9 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   #POST /api/tasks
   def create
     begin
-      task = Task.create!(task_params.merge(creator: current_user))
+      task = current_user.tasks.create!(task_params)
+      # binding.pry
+      # task.create!()
     rescue => e 
       render_exception(e, 422) && return
     end

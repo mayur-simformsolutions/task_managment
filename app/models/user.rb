@@ -4,4 +4,5 @@ class User < ApplicationRecord
   devise :invitable,:database_authenticatable, :registerable, :validatable, :confirmable
 
   has_many :tasks, class_name: 'Task', foreign_key: 'creator_id', dependent: :destroy
+  has_many :task_assignees, dependent: :destroy
 end

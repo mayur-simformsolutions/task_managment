@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_07_091022) do
+ActiveRecord::Schema.define(version: 2021_07_07_152303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -29,6 +29,15 @@ ActiveRecord::Schema.define(version: 2021_07_07_091022) do
     t.datetime "created_at", precision: 6
     t.datetime "updated_at", precision: 6
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "task_assignees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "task_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["task_id"], name: "index_task_assignees_on_task_id"
+    t.index ["user_id"], name: "index_task_assignees_on_user_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -69,4 +78,6 @@ ActiveRecord::Schema.define(version: 2021_07_07_091022) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
   end
 
+  add_foreign_key "task_assignees", "tasks"
+  add_foreign_key "task_assignees", "users"
 end

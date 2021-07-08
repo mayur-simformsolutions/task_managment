@@ -55,3 +55,6 @@ gem 'delayed_job_active_record'
 
 #rack cors
 gem 'rack-cors'
+
+#pagination
+gem 'will_paginate'
