@@ -64,7 +64,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   private
 
   def task_params
-    params.require(:task).permit(:title, :due_date, :description, :status)
+    params.require(:task).permit(:title, :due_date, :description, :status, label_ids: [])
   end
   
   def set_task

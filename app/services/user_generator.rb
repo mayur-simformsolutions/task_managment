@@ -16,7 +16,7 @@ class UserGenerator
 
     user = User.new(params) if user.blank?
 
-    user.auth_token = generate_token
+    user.auth_token =  JsonWebTokenService.encode({ email: user.email })
     user.skip_confirmation_notification! 
     user.save!
     user.confirm
@@ -37,10 +37,9 @@ class UserGenerator
 
     user = User.find_or_initialize_by(id: user.id)
       
-    # generate (unique) token & save
-    user.auth_token = generate_token
+    token = JsonWebTokenService.encode({ email: user.email })
+    user.update(auth_token: token)
 
-    user.save!  
     @user = user
   end
 
@@ -78,8 +77,7 @@ class UserGenerator
     user =  User.invite!({
       email: params[:email],
       first_name: params[:first_name],
-      last_name: params[:last_name], 
-      :skip_invitation => true
+      last_name: params[:last_name]
       },current_user)
 
     user.delay.invite!
@@ -94,14 +92,5 @@ class UserGenerator
     user.save!
     @user = user
   end
-  
-  private
-  
-  def generate_token
-    token_generator = SecureRandom.urlsafe_base64(128).tr('lIO0-', 'sxyzz')
-    loop do
-      token = token_generator
-      break token unless User.exists?(auth_token: token)
-    end
-  end
+
 end

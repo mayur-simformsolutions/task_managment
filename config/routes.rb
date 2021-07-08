@@ -11,7 +11,12 @@ Rails.application.routes.draw do
       end
 
       # Tasks
-      resources :tasks, only: [:index, :create, :destroy, :update, :show]
+      resources :tasks, only: [:index, :create, :destroy, :update, :show] do
+        resources :comments, only: [:index, :create, :update, :destroy]
+      end
+
+      #Labels
+      resources :labels, only: [:index, :create, :update, :destroy]
 
       # Custom routing error path
       match '*path', to: 'base#routing_error', via: %i[get post put patch delete]

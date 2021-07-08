@@ -72,3 +72,4 @@ yarn-debug.log
 /vendor/bundle
 
 /config/application.yml
+/config/master.key

@@ -6,9 +6,8 @@ class UserSessionValidator
   class SessionExpired < TokenValidatorError; end
   class UserNotFound < TokenValidatorError; end
 
-  # TTL = ENV['SESSION_TIMEOUT'].try(:to_i) || 1.year
 
-  attr_reader :user, :session
+  attr_reader :user
 
   def validate!(token)
     # validate parameters
