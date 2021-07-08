@@ -10,11 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_07_152303) do
+ActiveRecord::Schema.define(version: 2021_07_08_174014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "comment"
+    t.uuid "task_id", null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["task_id"], name: "index_comments_on_task_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
@@ -31,6 +41,24 @@ ActiveRecord::Schema.define(version: 2021_07_07_152303) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "documents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.string "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "attachment_file_name"
+    t.string "attachment_content_type"
+    t.bigint "attachment_file_size"
+    t.datetime "attachment_updated_at"
+    t.index ["task_id"], name: "index_documents_on_task_id"
+  end
+
+  create_table "labels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "task_assignees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "task_id", null: false
@@ -38,6 +66,15 @@ ActiveRecord::Schema.define(version: 2021_07_07_152303) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["task_id"], name: "index_task_assignees_on_task_id"
     t.index ["user_id"], name: "index_task_assignees_on_user_id"
+  end
+
+  create_table "task_labels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.uuid "label_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["label_id"], name: "index_task_labels_on_label_id"
+    t.index ["task_id"], name: "index_task_labels_on_task_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -70,6 +107,10 @@ ActiveRecord::Schema.define(version: 2021_07_07_152303) do
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.bigint "avatar_file_size"
+    t.datetime "avatar_updated_at"
     t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -78,6 +119,11 @@ ActiveRecord::Schema.define(version: 2021_07_07_152303) do
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
   end
 
+  add_foreign_key "comments", "tasks"
+  add_foreign_key "comments", "users"
+  add_foreign_key "documents", "tasks"
   add_foreign_key "task_assignees", "tasks"
   add_foreign_key "task_assignees", "users"
+  add_foreign_key "task_labels", "labels"
+  add_foreign_key "task_labels", "tasks"
 end

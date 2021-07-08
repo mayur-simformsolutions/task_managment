@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       #Labels
       resources :labels, only: [:index, :create, :update, :destroy]
 
+      #Documents
+      resources :documents, only: [:index, :create, :update, :destroy]
+
       # Custom routing error path
       match '*path', to: 'base#routing_error', via: %i[get post put patch delete]
       root to: 'base#routing_error'

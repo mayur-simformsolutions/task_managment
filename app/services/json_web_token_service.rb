@@ -6,8 +6,10 @@ class JsonWebTokenService
     JWT.encode payload, Rails.application.secrets.secret_key_base, 'HS256'
   end
 
+  # @param [string] token The User session token to validate
+  # @return [Hash] True if session token match otherwise FAILED  
   def self.decode(token)
-    return JWT.decode( token, Rails.application.secrets.secret_key_base, algorithm: 'HS256' )[0]
+    return JWT.decode(token, Rails.application.secrets.secret_key_base, algorithm: 'HS256' )[0]
   rescue
     'FAILED'
   end

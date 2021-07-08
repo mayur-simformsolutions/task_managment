@@ -16,9 +16,12 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   #POST /api/tasks
   def create
     begin
-      task = current_user.tasks.create!(task_params)
-      # binding.pry
-      # task.create!()
+      task = current_user.tasks.create!(task_params.except(:assignees))
+      params[:task][:assignees].each do |assignee|
+        task.task_assignees.create!(user_id: assignee)
+      end if params[:task][:assignees]
+      task.upload_documents(params) if params[:task][:documents_attributes]
+      task.save!
     rescue => e 
       render_exception(e, 422) && return
     end
@@ -64,7 +67,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   private
 
   def task_params
-    params.require(:task).permit(:title, :due_date, :description, :status, label_ids: [])
+    params.require(:task).permit(:title, :due_date, :description, :status , assignees: [], label_ids: [], documents_attributes: [:id, :attachment])
   end
   
   def set_task
