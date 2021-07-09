@@ -7,7 +7,7 @@ class TaskAssigneesSerializer
   end
 
   attribute :last_name do |assignee|
-    assignee.user.first_name
+    assignee.user.last_name
   end
 
 end
