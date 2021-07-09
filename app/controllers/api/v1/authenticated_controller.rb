@@ -3,6 +3,8 @@ module Api
   module V1
     class AuthenticatedController < BaseController
       before_action :authorize_user!
+      before_action :set_paper_trail_whodunnit
+      
 
       def current_user
         @current_user
@@ -22,6 +24,10 @@ module Api
         rescue UserSessionValidator::TokenValidatorError => e
           raise e.message
         end
+      end
+
+      def set_paper_trail_whodunnit
+        PaperTrail.request.whodunnit = current_user.id
       end
     end
   end

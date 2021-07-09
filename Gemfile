@@ -67,3 +67,6 @@ gem 'aws-sdk-s3'
 gem 'secure_headers'
 
 gem 'pg_search'
+
+
+gem 'paper_trail'

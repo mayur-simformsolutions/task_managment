@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class Task < ApplicationRecord
+  has_paper_trail
   include PgSearch::Model
 
   belongs_to :creator, class_name: 'User', foreign_key: 'creator_id'
@@ -9,6 +10,8 @@ class Task < ApplicationRecord
   has_many :task_labels
   has_many :labels, through: :task_labels
   has_many :documents, dependent: :destroy
+  before_save :save_event
+  before_update :update_event
 
   enum status: [:incompleted , :inprogress, :completed, :archive].freeze
   accepts_nested_attributes_for :documents, :reject_if => :all_blank, :allow_destroy => true
@@ -55,5 +58,13 @@ class Task < ApplicationRecord
 
   def full_name
     first_name + last_name
+  end
+
+  def save_event
+    self.paper_trail_event = "created task."
+  end
+
+  def update_event
+    self.paper_trail_event = "updated task."
   end
 end
