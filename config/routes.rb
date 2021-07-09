@@ -21,6 +21,9 @@ Rails.application.routes.draw do
       #Documents
       resources :documents, only: [:index, :create, :update, :destroy]
 
+      #User
+      resources :users, only: [:index]
+
       # Custom routing error path
       match '*path', to: 'base#routing_error', via: %i[get post put patch delete]
       root to: 'base#routing_error'

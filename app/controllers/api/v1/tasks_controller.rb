@@ -5,7 +5,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   # GET  /api/tasks
   def index
     begin
-      tasks = Task.all
+      tasks = Task.all.includes(:users, :documents, :comments, :labels)
       tasks = tasks.search(params[:query]) if params[:query].present?
       tasks = tasks.filter_assignee(params[:user]) if params[:user].present?
       tasks = tasks.filter_label(params[:label]) if params[:label].present?
