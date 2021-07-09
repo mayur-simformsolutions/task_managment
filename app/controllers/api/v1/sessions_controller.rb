@@ -19,7 +19,7 @@ class Api::V1::SessionsController < Api::V1::AuthenticatedController
     ug = UserGenerator.new
 
     begin
-      ug.destroy_session!(params)
+      ug.destroy_session!(current_user.auth_token)
     rescue UserGenerator::ParameterNotFound, UserGenerator::DuplicateError => e
       render_exception(e, 422) && return
     end

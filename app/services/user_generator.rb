@@ -43,9 +43,9 @@ class UserGenerator
     @user = user
   end
 
-  def destroy_session!(params)
+  def destroy_session!(token)
     # validate
-    user = User.find_by(auth_token: params[:auth_token])
+    user = User.find_by(auth_token: token)
     raise ParameterNotFound, 'User does not Exist.' if !user.present?
     
     user = User.find_or_initialize_by(id: user.id)

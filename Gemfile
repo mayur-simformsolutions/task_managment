@@ -62,3 +62,8 @@ gem 'will_paginate'
 # File uploading
 gem "kt-paperclip", "~> 6.4", ">= 6.4.1"
 gem 'aws-sdk-s3'
+
+#Security
+gem 'secure_headers'
+
+gem 'pg_search'

@@ -6,6 +6,9 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   def index
     begin
       tasks = Task.all
+      tasks = tasks.search(params[:query]) if params[:query].present?
+      tasks = tasks.filter_assignee(params[:user]) if params[:user].present?
+      tasks = tasks.filter_label(params[:label]) if params[:label].present?
       tasks = tasks.paginate(page: params[:page], per_page: 10)
     rescue => e
       render_exception(e, 422) && return
@@ -16,10 +19,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   #POST /api/tasks
   def create
     begin
-      task = current_user.tasks.create!(task_params.except(:assignees))
-      params[:task][:assignees].each do |assignee|
-        task.task_assignees.create!(user_id: assignee)
-      end if params[:task][:assignees]
+      task = current_user.tasks.create!(task_params)
       task.upload_documents(params) if params[:task][:documents_attributes]
       task.save!
     rescue => e 
@@ -67,7 +67,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   private
 
   def task_params
-    params.require(:task).permit(:title, :due_date, :description, :status , assignees: [], label_ids: [], documents_attributes: [:id, :attachment])
+    params.require(:task).permit(:title, :due_date, :description, :status , user_ids: [], label_ids: [], documents_attributes: [:id, :attachment])
   end
   
   def set_task
