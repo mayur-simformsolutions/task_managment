@@ -26,5 +26,9 @@ class TaskSerializer
   attribute :versions do |task|
      VersionSerializer.new(task.versions).serializable_hash[:data].map {|version| version[:attributes]}
   end
+
+  attribute :solicitations do |task|
+    SolicitationSerializer.new(task.solicitations).serializable_hash[:data].map {|solicitation| solicitation[:attributes]}
+  end
 end
   

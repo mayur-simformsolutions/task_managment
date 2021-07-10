@@ -5,16 +5,25 @@ class Task < ApplicationRecord
 
   belongs_to :creator, class_name: 'User', foreign_key: 'creator_id'
   has_many :task_assignees, dependent: :destroy
-  has_many :tasks, through: :task_assignees
+  has_many :users, through: :task_assignees
   has_many :comments, dependent: :destroy
   has_many :task_labels
   has_many :labels, through: :task_labels
   has_many :documents, dependent: :destroy
+  has_many :task_solicitations, dependent: :destroy
+  has_many :solicitations, through: :task_solicitations
+  #Callbake
   before_save :save_event
   before_update :update_event
 
   enum status: [:incompleted , :inprogress, :completed, :archive].freeze
   accepts_nested_attributes_for :documents, :reject_if => :all_blank, :allow_destroy => true
+
+  scope :sort_by_title, -> (query) {order(query)}
+  scope :sort_by_status, -> (query) { order(status: "#{query}".to_sym) }
+  scope :sort_by_assigness, -> (query) { joins(:users).order("users.first_name #{query}") } # TODO: need to do on fullname
+  scope :sort_by_labels, -> (query) { joins(:labels).order("labels.name #{query}") }
+  scope :sort_by_solicitations, -> (query) {  joins(:solicitations).order("solicitations.name #{query}") }
 
   scope :filter_by_dates, -> (custom_day) {
     tasks =
@@ -45,6 +54,18 @@ class Task < ApplicationRecord
     associated_against: {users: :first_name},
     using: {tsearch: {prefix: true}}
   
+  pg_search_scope :filter_by_status, 
+    against: [:status],
+    using: {tsearch: {prefix: true}}
+  
+  pg_search_scope :filter_by_document, 
+    associated_against: {documents: :title},
+    using: {tsearch: {prefix: true}}
+
+  pg_search_scope :filter_by_solicitations, 
+    associated_against: {solicitations: :name},
+    using: {tsearch: {prefix: true}}
+
   pg_search_scope :search, 
     against: [:title, :discription, :due_date],
     using: {tsearch: {prefix: true}}

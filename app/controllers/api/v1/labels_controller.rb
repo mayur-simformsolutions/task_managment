@@ -20,6 +20,10 @@ class Api::V1::LabelsController < Api::V1::AuthenticatedController
     json_response(LabelSerializer.new(label).serializable_hash[:data][:attributes])
   end
 
+  def show
+    json_response(LabelSerializer.new(@label).serializable_hash[:data][:attributes])
+  end
+
   def update
     begin
       @label.update!(label_params)
