@@ -5,7 +5,7 @@ class UserGenerator
   class InvalidCredentials < StandardError; end
   class ConfirmationError < StandardError; end
 
-  attr_reader :user, :role, :platform, :session
+  attr_reader :user
 
   def generate!(params)
     # validate parameters

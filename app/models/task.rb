@@ -18,7 +18,7 @@ class Task < ApplicationRecord
   before_save :save_event
   before_update :update_event
 
-  enum status: [:incompleted , :inprogress, :completed, :archive].freeze
+  enum status: [:incompleted , :inprogress, :completed, :archive, :unarchive].freeze
   accepts_nested_attributes_for :documents, reject_if: :all_blank, allow_destroy: true
 
   #Validations
@@ -69,13 +69,13 @@ class Task < ApplicationRecord
     using: {tsearch: {prefix: true}}
 
   # Filter by solicitations
-  pg_search_scope :filter_by_solicitations, 
+  pg_search_scope :filter_by_solicitation, 
     associated_against: {solicitations: :name},
     using: {tsearch: {prefix: true}}
   
   # Filter by search by title, discription, and due date
   pg_search_scope :search, 
-    against: [:title, :discription, :due_date],
+    against: [:title, :description, :due_date],
     using: {tsearch: {prefix: true}}
   
 

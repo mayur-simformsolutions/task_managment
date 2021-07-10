@@ -8,7 +8,7 @@ class CommentSerializer
     object.user.full_name
   end
 
-  attribute :commentor_avatar do |user|
+  attribute :commentor_avatar do |object|
     object.user.avatar.url
   end
 end
