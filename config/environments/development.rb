@@ -43,6 +43,16 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = true
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
+  config.action_mailer.smtp_settings = {
+    :address   => "smtp.sendgrid.net",
+    :port      => 587, # ports 587 and 2525 are also supported with STARTTLS
+    :enable_starttls_auto => true, # detects and uses STARTTLS
+    :user_name => ENV["MAIL_USER_NAME"],
+    :password  => ENV["MAIL_USER_PASSWORD"], # SMTP password is any valid API key, when user_name is "apikey".
+    :authentication => 'login',
+    :domain => 'domain', # your domain to identify your server when connecting
+  }
+
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
 

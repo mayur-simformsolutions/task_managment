@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_09_151300) do
+ActiveRecord::Schema.define(version: 2021_07_09_173323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -59,6 +59,13 @@ ActiveRecord::Schema.define(version: 2021_07_09_151300) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "solicitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "task_assignees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "task_id", null: false
@@ -75,6 +82,15 @@ ActiveRecord::Schema.define(version: 2021_07_09_151300) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["label_id"], name: "index_task_labels_on_label_id"
     t.index ["task_id"], name: "index_task_labels_on_task_id"
+  end
+
+  create_table "task_solicitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.uuid "solicitation_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["solicitation_id"], name: "index_task_solicitations_on_solicitation_id"
+    t.index ["task_id"], name: "index_task_solicitations_on_task_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -136,4 +152,6 @@ ActiveRecord::Schema.define(version: 2021_07_09_151300) do
   add_foreign_key "task_assignees", "users"
   add_foreign_key "task_labels", "labels"
   add_foreign_key "task_labels", "tasks"
+  add_foreign_key "task_solicitations", "solicitations"
+  add_foreign_key "task_solicitations", "tasks"
 end

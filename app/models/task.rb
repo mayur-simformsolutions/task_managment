@@ -3,7 +3,8 @@ class Task < ApplicationRecord
   has_paper_trail
   include PgSearch::Model
 
-  belongs_to :creator, class_name: 'User', foreign_key: 'creator_id'
+  #Assosications
+  belongs_to :creator, class_name: :User, foreign_key: :creator_id
   has_many :task_assignees, dependent: :destroy
   has_many :users, through: :task_assignees
   has_many :comments, dependent: :destroy
@@ -12,20 +13,26 @@ class Task < ApplicationRecord
   has_many :documents, dependent: :destroy
   has_many :task_solicitations, dependent: :destroy
   has_many :solicitations, through: :task_solicitations
-  #Callbake
+
+  #Callbacks
   before_save :save_event
   before_update :update_event
 
   enum status: [:incompleted , :inprogress, :completed, :archive].freeze
-  accepts_nested_attributes_for :documents, :reject_if => :all_blank, :allow_destroy => true
+  accepts_nested_attributes_for :documents, reject_if: :all_blank, allow_destroy: true
 
-  scope :sort_by_title, -> (query) {order(query)}
-  scope :sort_by_status, -> (query) { order(status: "#{query}".to_sym) }
-  scope :sort_by_assigness, -> (query) { joins(:users).order("users.first_name #{query}") } # TODO: need to do on fullname
-  scope :sort_by_labels, -> (query) { joins(:labels).order("labels.name #{query}") }
-  scope :sort_by_solicitations, -> (query) {  joins(:solicitations).order("solicitations.name #{query}") }
+  #Validations
+  validates_presence_of :title, :description
 
-  scope :filter_by_dates, -> (custom_day) {
+  #Scopes
+  scope :sort_by_title,         ->   (query)   { order(title: query.to_sym) }
+  scope :sort_by_status,        ->   (query)   { order(status: query.to_sym) }
+  scope :sort_by_assigness,     ->   (query)   { joins(:users).order("users.first_name "+ query) }
+  scope :sort_by_labels,        ->   (query)   { joins(:labels).order("labels.name "+ query) }
+  scope :sort_by_solicitations, ->   (query)   { joins(:solicitations).order("solicitations.name" + query) }
+  scope :filter_by_status,      ->   (query)   { where(status: query) }
+  scope :search_for_own_task,   ->   (user_id) { joins(:users).where("users.id = :id OR creator_id = :id", { id: user_id }) }
+  scope :filter_by_dates,       ->   (custom_day) {
     tasks =
       case custom_day
       when "today"
@@ -46,41 +53,40 @@ class Task < ApplicationRecord
     where(tasks)
   }
 
+  # Filter by lable
   pg_search_scope :filter_label, 
     associated_against: {labels: :name}, 
     using: {tsearch: {prefix: true}}
 
+  # Filter by assignee
   pg_search_scope :filter_assignee, 
     associated_against: {users: :first_name},
     using: {tsearch: {prefix: true}}
   
-  pg_search_scope :filter_by_status, 
-    against: [:status],
-    using: {tsearch: {prefix: true}}
-  
+  # Filter by document
   pg_search_scope :filter_by_document, 
     associated_against: {documents: :title},
     using: {tsearch: {prefix: true}}
 
+  # Filter by solicitations
   pg_search_scope :filter_by_solicitations, 
     associated_against: {solicitations: :name},
     using: {tsearch: {prefix: true}}
-
+  
+  # Filter by search by title, discription, and due date
   pg_search_scope :search, 
     against: [:title, :discription, :due_date],
     using: {tsearch: {prefix: true}}
   
 
+  # @param [FileObject] Task's documents
   def upload_documents(params)
     params[:task][:documents_attributes].each do |attachment|
       documents.build(title: attachment.original_filename, attachment: attachment)
     end
   end
 
-  def full_name
-    first_name + last_name
-  end
-
+  # @Set [string] Sets the tasks events
   def save_event
     self.paper_trail_event = "created task."
   end

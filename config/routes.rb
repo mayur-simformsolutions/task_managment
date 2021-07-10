@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  
+  devise_for :users, skip: [:sessions, :passwords, :invitations, :confirmations]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     namespace :v1 do 
@@ -12,6 +14,7 @@ Rails.application.routes.draw do
 
       # Tasks
       resources :tasks, only: [:index, :create, :destroy, :update, :show] do
+        patch :status, on: :member
         resources :comments, only: [:index, :create, :update, :destroy]
       end
 
