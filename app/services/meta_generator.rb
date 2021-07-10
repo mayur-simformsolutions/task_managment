@@ -2,6 +2,8 @@
 class MetaGenerator
   attr_reader :meta_key
   
+  # @param [string] token The User session token to validate
+  # @return [Hash] True if session token match otherwise FAILED 
   def generate!(object)
     return meta_key = {
         current_page: object.current_page,

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  
+  devise_for :users, skip: [:sessions, :passwords, :invitations, :confirmations]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   namespace :api do
     namespace :v1 do 
@@ -16,13 +18,16 @@ Rails.application.routes.draw do
       end
 
       #Labels
-      resources :labels, only: [:index, :create, :update, :destroy]
+      resources :labels, only: [:index, :create, :show, :update, :destroy]
 
       #Documents
       resources :documents, only: [:index, :create, :update, :destroy]
 
       #User
       resources :users, only: [:index]
+
+      #Solicitation
+      resources :solicitations, only: [:index, :create, :show, :update, :destroy]
 
       # Custom routing error path
       match '*path', to: 'base#routing_error', via: %i[get post put patch delete]

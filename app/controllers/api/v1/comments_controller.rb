@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Api::V1::CommentsController < Api::V1::AuthenticatedController
   before_action :set_task, only: [:index, :create, :update, :destroy]
-  before_action :set_comment, only: [:update, :destroy]
+  before_action :set_comment, :require_permission, only: [:update, :destroy]
 
   # GET /api/v1/tasks/:task_id/comments
   def index
@@ -55,5 +55,9 @@ class Api::V1::CommentsController < Api::V1::AuthenticatedController
 
   def set_comment
     @comment = @task.comments.find(params[:id])
+  end
+
+  def require_permission
+    raise "You don't have permission" if @comment.user_id != current_user.id
   end
 end

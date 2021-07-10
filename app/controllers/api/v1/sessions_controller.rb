@@ -26,8 +26,8 @@ class Api::V1::SessionsController < Api::V1::AuthenticatedController
     render json: { success: true, data: {}, errors: [] }, status: 200
   end
 
+  # Private methods
   private
-
   def sign_in_params
     params.require(:user).permit(:email, :password)
   end

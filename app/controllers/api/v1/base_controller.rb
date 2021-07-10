@@ -2,7 +2,7 @@
 module Api
   module V1
     class BaseController < ActionController::API
-      #generic response 
+      #Generic response 
       def json_response(data, option = nil)
         if option.present?
           return render json: { success: true, data: data, meta_key: option, errors: []}, status: 200
@@ -10,12 +10,12 @@ module Api
         render json: { success: true, data: data, errors: []}, status: 200
       end
 
-      # generic
+      # Genertic exception
       rescue_from Exception do |exception|
        render_exception exception, 422
       end
 
-      # 404 
+      # 404 respose
       rescue_from ActionController::RoutingError, ActiveRecord::RecordNotFound do |exception|
         render_exception exception, 404
       end
@@ -27,10 +27,6 @@ module Api
           data: {},
           errors: ('Page not found')
         }, status: 404
-      end
-
-      def check_health
-        json_response({})
       end
 
       protected

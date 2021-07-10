@@ -1,6 +1,9 @@
+# frozen_string_literal: true
 class Document < ApplicationRecord
+  #Assosications
   belongs_to :task
 
+  #Validation
   has_attached_file :attachment, 
     path: "documents/:id/:style/:filename", 
     default_url: "",

@@ -14,8 +14,8 @@ class Api::V1::RegistrationsController < Api::V1::AuthenticatedController
 		json_response(UserSerializer.new(ug.user).serializable_hash[:data][:attributes])
 	end
 	
+	# Private methods
   private
-
   def user_params
     params.require(:user).permit(:email, :password, :first_name, :last_name, :avatar)
   end
