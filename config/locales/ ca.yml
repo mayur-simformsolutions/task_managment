@@ -1,0 +1,6 @@
+en:
+  faker:
+    name:
+      label: [ADA, Lega, ACD, API, TWF, QRE, YLG, ROE, WOAL, BAL]
+      solicitation: [Information Attachments, Legal Information, ACD Information, API Information, TWF Information, QRE Information, YLG Information]
+      

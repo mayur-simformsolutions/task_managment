@@ -2,9 +2,13 @@
 class CommentSerializer
   include JSONAPI::Serializer  
 
-  attribute :id
-  attribute :comment
+  attributes :id, :comment, :created_at
+
   attribute :user_name do |object|
-    object.user.first_name
+    object.user.full_name
+  end
+
+  attribute :commentor_avatar do |user|
+    object.user.avatar.url
   end
 end
