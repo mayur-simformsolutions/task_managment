@@ -11,7 +11,7 @@ class Document < ApplicationRecord
     s3_credentials: {
       access_key_id: ENV['AWS_ACCESS_KEY'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
-      bucket: ENV['AWS_S3_BUCKET_NAME']
+      bucket: ENV['AWS_DOCUMENT_BUCKET_NAME']
     },
     s3_region: "us-east-2",
     s3_protocol: 'https',

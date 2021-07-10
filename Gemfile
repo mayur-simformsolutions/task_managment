@@ -34,6 +34,7 @@ gem 'aws-sdk-s3'
 
 # Security
 gem 'secure_headers'
+gem "figaro"
 
 # Searching
 gem 'pg_search'

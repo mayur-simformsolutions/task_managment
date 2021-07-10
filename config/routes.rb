@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
       # Tasks
       resources :tasks, only: [:index, :create, :destroy, :update, :show] do
+        patch :status, on: :member
         resources :comments, only: [:index, :create, :update, :destroy]
       end
 
