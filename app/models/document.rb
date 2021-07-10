@@ -14,7 +14,13 @@ class Document < ApplicationRecord
     s3_protocol: 'https',
     s3_host_name: "s3-us-east-2.amazonaws.com"
     validates_attachment_content_type :attachment, 
-    content_type: ["application/msword", 
-                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
-                  "text/plain"]
+    content_type: [
+      "application/pdf",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-powerpoint",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    ]
 end

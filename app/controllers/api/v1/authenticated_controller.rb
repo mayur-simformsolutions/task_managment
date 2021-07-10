@@ -27,7 +27,7 @@ module Api
       end
 
       def set_paper_trail_whodunnit
-        PaperTrail.request.whodunnit = current_user.id
+        PaperTrail.request.whodunnit = current_user.id if current_user
       end
     end
   end
