@@ -6,9 +6,20 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   def index
     begin
       tasks = Task.all.includes(:users, :documents, :comments, :labels)
+      
+      #Searching and filtering
       tasks = tasks.search(params[:query]) if params[:query].present?
       tasks = tasks.filter_assignee(params[:user]) if params[:user].present?
       tasks = tasks.filter_label(params[:label]) if params[:label].present?
+      tasks = tasks.filter_by_status(params[:status]) if params[:status].present?
+      tasks = tasks.filter_by_document(params[:document]) if params[:document].present?
+      tasks = tasks.filter_by_solicitations(params[:solicitations]) if params[:solicitations].present?
+      # sorting
+      tasks = tasks.sort_by_title(params[:sort_title]) if params[:sort_title].present?
+      tasks = tasks.sort_by_assigness(params[:sort_assigness]) if params[:sort_assigness].present?
+      tasks = tasks.sort_by_labels(params[:sort_labels]) if params[:sort_labels].present?
+      tasks = tasks.sort_by_solicitations(params[:sort_solicitations]) if params[:sort_solicitations].present?
+
       tasks = tasks.paginate(page: params[:page], per_page: 10)
     rescue => e
       render_exception(e, 422) && return
@@ -67,7 +78,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
   private
 
   def task_params
-    params.require(:task).permit(:title, :due_date, :description, :status , user_ids: [], label_ids: [], documents_attributes: [:id, :attachment])
+    params.require(:task).permit(:title, :due_date, :description, :status , user_ids: [], label_ids: [], solicitation_ids:[], documents_attributes: [:id, :attachment])
   end
   
   def set_task
