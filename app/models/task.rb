@@ -27,11 +27,20 @@ class Task < ApplicationRecord
   #Scopes
   scope :sort_by_title,         ->   (query)   { order(title: query.to_sym) }
   scope :sort_by_status,        ->   (query)   { order(status: query.to_sym) }
-  scope :sort_by_assigness,     ->   (query)   { joins(:users).order("users.first_name "+ query) }
-  scope :sort_by_labels,        ->   (query)   { joins(:labels).order("labels.name "+ query) }
-  scope :sort_by_solicitations, ->   (query)   { joins(:solicitations).order("solicitations.name" + query) }
+  scope :sort_by_assigness,     ->   (query)   { includes(:users).order("users.first_name "+ query) }
+  scope :sort_by_labels,        ->   (query)   { includes(:labels).order("labels.name "+ query) }
+  scope :sort_by_solicitations, ->   (query)   { includes(:solicitations).order("solicitations.name " + query) }
   scope :filter_by_status,      ->   (query)   { where(status: query) }
-  scope :search_for_own_task,   ->   (user_id) { joins(:users).where("users.id = :id OR creator_id = :id", { id: user_id }) }
+  scope :created_by_filter,     ->   (user_id) {​​​ where(creator_id:user_id) }​​​
+  scope :assigned_to_me_filter, ->   (user_id) {​​​ joins(:task_assignees).where("task_assignees.user_id = ?", user_id) }​​​
+  scope :filter_by_user,        ->   (query, user_id) {​​​ 
+    if query == 'created_by'
+      created_by_filter(user_id)
+    elsif query == 'assigned_by'
+      assigned_to_me_filter(user_id)
+    end
+  }​​​
+
   scope :filter_by_dates,       ->   (custom_day) {
     tasks =
       case custom_day

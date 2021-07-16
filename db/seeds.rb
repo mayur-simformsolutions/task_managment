@@ -9,9 +9,9 @@ require 'open-uri'
 
 # Prepare profile image
 def image_fetcher
-  open(Faker::Avatar.image)
+  Faker::LoremFlickr.image( search_terms: ['face'])
   rescue
-  open("https://robohash.org/sitsequiquia.png?size=300x300&set=set1")
+  open("https://loremflickr.com/300/300/face")
 end
 
 # Populate tables
@@ -27,7 +27,7 @@ end
 end
 
 # Create users
-10.times do |i|
+20.times do |i|
  user = User.new(
     first_name: Faker::Name.first_name, 
     last_name: Faker::Name.first_name,
