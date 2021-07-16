@@ -88,6 +88,7 @@ class Api::V1::TasksController < Api::V1::AuthenticatedController
     @tasks = @tasks.filter_by_status(params[:status]) if params[:status].present?
     @tasks = @tasks.filter_by_document(params[:document]) if params[:document].present?
     @tasks = @tasks.filter_by_solicitation(params[:solicitation]) if params[:solicitation].present?
+    @tasks = @tasks.filter_by_dates(params[:date_filter]) if params[:date_filter].present?
     @tasks
   end
 end 
